@@ -2,13 +2,15 @@
 
 /* @var $factory \Illuminate\Database\Eloquent\Factory */
 
-use App\Model;
+use App\File;
 use Faker\Generator as Faker;
 
-$factory->define(Model::class, function (Faker $faker) {
+$factory->define(File::class, function (Faker $faker) {
+    $name = ucfirst($faker->mimeType);
     return [
-        'name' => $faker->mimeType,
+        'name' => $name,
         'user_id' => random_int(1,2),
-        'description' => $faker->realText(80,  2)
+        'description' => $faker->realText(80,  2),
+        'archivo' => $name
     ];
 });

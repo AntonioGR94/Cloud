@@ -11,6 +11,11 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'FilesController@index')->name('root');
+Route::get('/contact', 'FilesController@contact')->name('contact')->middleware('auth');
+Route::get('/about', 'FilesController@about')->name('about');
+Route::resource('/files', 'FilesController');
+Auth::routes();
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
