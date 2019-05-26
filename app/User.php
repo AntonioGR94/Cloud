@@ -36,4 +36,17 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function files()
+    {
+        return $this->hasMany(File::class);
+    }
+    public function getFirstNameAttribute($value)
+    {
+        return ucfirst($value);
+    }
+    public function owns(File $file)
+    {
+        return $this->id == $file->user_id;
+    }
 }

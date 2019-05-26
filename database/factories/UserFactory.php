@@ -17,9 +17,10 @@ use Faker\Generator as Faker;
 */
 
 $factory->define(User::class, function (Faker $faker) {
-    $name = ucfirst($faker->words(rand(1,10), true));
+    $name = $faker->name;
     return [
-        'name' => $faker->name,
+        'name' => $name,
+        'slug' => str_slug($name,'-'),
         'nick' =>$faker->userName,
         'email' => $faker->unique()->safeEmail,
         'email_verified_at' => now(),

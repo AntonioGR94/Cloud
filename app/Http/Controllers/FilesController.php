@@ -3,10 +3,24 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\FileRequest;
+use App\User;
 use App\File;
+use Illuminate\Support\Facades\Storage;
+
 
 class FilesController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth', [
+            'only' => ['create' , 'store', 'edit', 'update', 'destroy']
+        ]);
+        $this->middleware('can:touch,file',[
+            'only' => ['edit','update','destroy']
+        ]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +28,8 @@ class FilesController extends Controller
      */
     public function index()
     {
-        $files = File::all();
+        $files = File::paginate(12);
+
         return view('public.files.index')->withFiles($files);
     }
 
@@ -25,7 +40,7 @@ class FilesController extends Controller
      */
     public function create()
     {
-        //
+        return view('public.files.create');
     }
 
     /**
@@ -34,9 +49,18 @@ class FilesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(FileRequest $request)
     {
-        //
+        $file = $request->file('archivo');
+        File::create([
+            'user_id' => $request->user()->id,
+            'name' => request('name'),
+            'slug' => str_slug(request('name'), "-"),
+            'description' => request('description'),
+            'archivo' => $file->store('archivos','public'),
+        ]);
+
+        return redirect('/');
     }
 
     /**
@@ -45,9 +69,10 @@ class FilesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($slug)
     {
-        //
+        $file = File::where('slug', $slug)->firstOrFail();
+        return view('public.files.show', ['file' => $file]);
     }
 
     /**
@@ -56,9 +81,9 @@ class FilesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(File $file)
     {
-        //
+        return view('public.files.edit', ['file' => $file]);
     }
 
     /**
@@ -68,9 +93,16 @@ class FilesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(FileRequest $request, File $file)
     {
-        //
+        $archivo = $request->file('archivo');
+        $file->update([
+            'name' => request('name'),
+            'slug' => str_slug(request('name'), "-"),
+            'description' => request('description'),
+            'archivo' => $archivo->store('arhivos','public'),
+        ]);
+        return redirect('/files/'.$file->slug);
     }
 
     /**
@@ -79,8 +111,17 @@ class FilesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(File $file)
     {
-        //
+        $file->delete();
+        return redirect('/');
+    }
+
+    public function contact(){
+        return view('public.contact');
+    }
+
+    public function about(){
+        return view('public.contact');
     }
 }

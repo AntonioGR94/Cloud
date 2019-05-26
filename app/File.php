@@ -15,6 +15,13 @@ class File extends Model
      * @var array
      */
     protected $fillable = [
-        'name','user_id','description','archivo'
+        'name','slug','user_id','description','archivo'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+
 }
