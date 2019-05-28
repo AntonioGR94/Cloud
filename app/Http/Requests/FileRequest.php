@@ -36,7 +36,7 @@ class FileRequest extends FormRequest
             'name.required'=> 'El :attribute es requerido.',
             'name.min' => 'El :attribute debe tener al menos 3 caracteres',
             'description.required'=> 'La :attribute es requerida.',
-            'archivo.required'=> 'El necesario subir un :attribute '
+            'archivo.required'=> 'Es necesario subir un :attribute '
         ];
     }
 
